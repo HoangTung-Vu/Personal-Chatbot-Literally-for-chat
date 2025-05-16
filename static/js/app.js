@@ -4,9 +4,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const messagesContainer = document.getElementById('messages');
     const chatHistory = document.getElementById('chat-history');
     const webSearchToggle = document.getElementById('web-search-toggle');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
     
     let currentChatId = Date.now().toString();
-    let webSearchEnabled = true; // Default to enabled
+    let webSearchEnabled = false; // Default to disabled
+    let isMobile = window.innerWidth <= 768;
+    
+    // Handle sidebar toggle for mobile devices
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+            // When sidebar is shown, add click event to close it when clicking outside
+            if (sidebar.classList.contains('show')) {
+                setTimeout(function() {
+                    document.addEventListener('click', closeSidebarOnClickOutside);
+                }, 10);
+            }
+        });
+    }
+    
+    // Function to close sidebar when clicking outside on mobile
+    function closeSidebarOnClickOutside(event) {
+        if (!sidebar.contains(event.target) && event.target !== sidebarToggle) {
+            sidebar.classList.remove('show');
+            document.removeEventListener('click', closeSidebarOnClickOutside);
+        }
+    }
     
     // Initialize web search toggle state
     if (webSearchToggle) {
@@ -21,6 +45,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load chat history when page loads
     loadChatHistory();
+    
+    // Fix for Android keyboard issues affecting viewport
+    let viewportHeight = window.innerHeight;
+    window.addEventListener('resize', function() {
+        // If height decreased significantly (keyboard appeared)
+        if (window.innerHeight < viewportHeight * 0.75) {
+            document.body.classList.add('keyboard-open');
+        } else {
+            document.body.classList.remove('keyboard-open');
+        }
+        viewportHeight = window.innerHeight;
+    });
     
     // Auto-resize textarea as user types
     userInput.addEventListener('input', function() {
@@ -45,6 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear input
         userInput.value = '';
         userInput.style.height = 'auto';
+        
+        // Close sidebar on mobile if open
+        if (isMobile && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+            document.removeEventListener('click', closeSidebarOnClickOutside);
+        }
         
         // Show typing indicator
         const typingIndicator = document.createElement('div');
@@ -139,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    // Add message to UI
+    // Add message to UI with improved mobile handling
     function addMessage(text, sender) {
         // Remove welcome message if present
         const welcomeMessage = document.querySelector('.welcome-message');
@@ -164,12 +206,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     .replace(/"/g, '&quot;')
                     .replace(/'/g, '&#039;');
             });
+            
+            // Make links open in new tabs
+            messageDiv.querySelectorAll('a').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+            });
+            
+            // Make images responsive
+            messageDiv.querySelectorAll('img').forEach(img => {
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+            });
         } else {
             messageDiv.textContent = text;
         }
         
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Fix for Android not scrolling properly
+        setTimeout(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 100);
     }
     
     // Update chat history sidebar
@@ -189,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Support for keyboard shortcuts
+    // Support for keyboard shortcuts and better mobile keyboard handling
     userInput.addEventListener('keydown', function(event) {
         // Submit on Enter (unless Shift is held, which allows for new lines)
         if (event.key === 'Enter' && !event.shiftKey) {
@@ -197,4 +256,37 @@ document.addEventListener('DOMContentLoaded', function() {
             chatForm.dispatchEvent(new Event('submit'));
         }
     });
+    
+    // Handle window resize to toggle mobile view
+    window.addEventListener('resize', function() {
+        isMobile = window.innerWidth <= 768;
+        
+        // Reset sidebar visibility when switching between mobile and desktop
+        if (!isMobile && sidebar) {
+            sidebar.classList.remove('show');
+            document.removeEventListener('click', closeSidebarOnClickOutside);
+        }
+    });
+    
+    // Check for Android
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    if (isAndroid) {
+        document.body.classList.add('android-device');
+        
+        // Additional fixes for Android keyboard issues
+        userInput.addEventListener('focus', function() {
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 300);
+        });
+        
+        userInput.addEventListener('blur', function() {
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+            }, 300);
+        });
+    }
 });
