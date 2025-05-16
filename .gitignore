@@ -28,4 +28,7 @@ myai/
 .DS_Store
 Thumbs.db
 
+/data
+/chroma_db
+
 **/private_system_prompt.txt

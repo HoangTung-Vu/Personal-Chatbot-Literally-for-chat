@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Load chat history when page loads
+    loadChatHistory();
+    
     // Auto-resize textarea as user types
     userInput.addEventListener('input', function() {
         this.style.height = 'auto';
@@ -100,6 +103,41 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
         });
     });
+    
+    // Function to load chat history from server
+    function loadChatHistory() {
+        fetch('/api/chat/history')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load chat history');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.messages && data.messages.length > 0) {
+                    // Remove welcome message if present
+                    const welcomeMessage = document.querySelector('.welcome-message');
+                    if (welcomeMessage && welcomeMessage.parentNode === messagesContainer) {
+                        messagesContainer.removeChild(welcomeMessage);
+                    }
+                    
+                    // Display messages in the UI
+                    data.messages.forEach(msg => {
+                        const role = msg.role === 'model' ? 'ai' : 'user';
+                        addMessage(msg.content, role);
+                    });
+                    
+                    // Update sidebar with latest chat
+                    const lastUserMessage = data.messages.filter(msg => msg.role === 'user').pop();
+                    if (lastUserMessage) {
+                        updateChatHistory(lastUserMessage.content);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading chat history:', error);
+            });
+    }
     
     // Add message to UI
     function addMessage(text, sender) {

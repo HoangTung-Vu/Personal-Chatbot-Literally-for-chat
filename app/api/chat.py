@@ -4,6 +4,7 @@ import datetime
 from pathlib import Path
 from app.models.chat_models import ChatRequest, ChatResponse
 from app.services.llm.main_llm import MainLLM
+from typing import List, Dict
 
 # Create router
 chat_router = APIRouter(prefix="/api", tags=["chat"])
@@ -66,3 +67,27 @@ async def create_chat(request: ChatRequest = Body(...)):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chat processing error: {str(e)}")
+
+@chat_router.get("/chat/history")
+async def get_chat_history():
+    """Get chat history from database for display in UI"""
+    try:
+        with sqlite3.connect(DB_FILE) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, timestamp, role, parts FROM chat ORDER BY id")
+            rows = cursor.fetchall()
+            
+            # Format the chat history as a list of messages
+            messages = []
+            for row in rows:
+                messages.append({
+                    "id": row[0],
+                    "timestamp": row[1],
+                    "role": row[2],
+                    "content": row[3]
+                })
+            
+            return {"messages": messages}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching chat history: {str(e)}")
