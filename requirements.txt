@@ -1,0 +1,13 @@
+fastapi==0.115.9
+uvicorn[standard]
+jinja2
+pydantic
+python-dotenv
+google-generativeai
+chromadb
+numpy
+sqlite3-helper
+requests
+markdown
+python-multipart
+httpx
