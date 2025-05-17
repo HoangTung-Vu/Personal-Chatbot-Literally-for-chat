@@ -36,7 +36,7 @@ class MainLLM(BaseLLM):
         full_context = "\n\n".join(context_parts)
         print("Full context for LLM:", full_context)
         # Generate prompt with context
-        prompt = f"Context information (use this to inform your response, but don't explicitly mention it):\n{full_context}\n\nUser message: {message}"
+        prompt = f"Context information (use this to inform your response, but don't explicitly mention it)(for web search results : insert link and references):\n{full_context}\n\nUser message: {message}"
         
         # Generate response
         response = self.generate_response(prompt)
