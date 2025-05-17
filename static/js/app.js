@@ -11,6 +11,22 @@ document.addEventListener('DOMContentLoaded', function() {
     let webSearchEnabled = false; // Default to disabled
     let isMobile = window.innerWidth <= 768;
     
+    // Setup UI based on device size
+    function setupUIForDeviceSize() {
+        isMobile = window.innerWidth <= 768;
+        
+        // On desktop, make sure sidebar is visible and properly positioned
+        if (!isMobile && sidebar) {
+            sidebar.classList.remove('show'); // Remove the mobile-specific class
+            sidebar.style.display = 'block'; // Ensure it's visible
+            sidebar.style.left = '0'; // Ensure it's positioned correctly
+            document.removeEventListener('click', closeSidebarOnClickOutside);
+        }
+    }
+    
+    // Run initial UI setup
+    setupUIForDeviceSize();
+    
     // Handle sidebar toggle for mobile devices
     if (sidebarToggle && sidebar) {
         sidebarToggle.addEventListener('click', function() {
@@ -56,6 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.remove('keyboard-open');
         }
         viewportHeight = window.innerHeight;
+        
+        // Handle layout changes on resize
+        setupUIForDeviceSize();
     });
     
     // Auto-resize textarea as user types

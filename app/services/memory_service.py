@@ -141,7 +141,6 @@ class MemoryService:
                 n_results=n_results,
                 where=formatted_where
             )
-            
             # Format results
             if results and results['documents'] and len(results['documents'][0]) > 0:
                 # Include metadata like role and timestamp in the context
@@ -151,6 +150,11 @@ class MemoryService:
                         continue
                     role = results['metadatas'][0][i].get('role', 'unknown')
                     timestamp = results['metadatas'][0][i].get('timestamp', 'unknown time')
+                    # print("------")
+                    # print(f"Role: {role}")
+                    # print(f"Timestamp: {timestamp}")
+                    # print(f"Distance: {results['distances'][0][i]}")
+                    # print(f"Document: {doc}")
                     formatted_results.append(f"[{role} at {timestamp}]: {doc}")
                 
                 context = "\n\n".join(formatted_results)

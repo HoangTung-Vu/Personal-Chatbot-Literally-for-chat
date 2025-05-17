@@ -34,7 +34,7 @@ class MainLLM(BaseLLM):
         
         # Combine all context
         full_context = "\n\n".join(context_parts)
-        
+        print("Full context for LLM:", full_context)
         # Generate prompt with context
         prompt = f"Context information (use this to inform your response, but don't explicitly mention it):\n{full_context}\n\nUser message: {message}"
         

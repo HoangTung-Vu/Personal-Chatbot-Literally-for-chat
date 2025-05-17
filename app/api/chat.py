@@ -22,7 +22,7 @@ def load_chat_history():
     """Load chat history from SQLite database - last 20 messages"""
     with sqlite3.connect(DB_FILE) as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT role, parts FROM chat ORDER BY id DESC LIMIT 20")
+        cursor.execute("SELECT role, parts FROM chat ORDER BY id DESC LIMIT 10")
         print("Loaded chat history from database")
         return [{"role": row[0], "parts": row[1]} for row in reversed(cursor.fetchall())]
     
