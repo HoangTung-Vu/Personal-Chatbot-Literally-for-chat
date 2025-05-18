@@ -18,7 +18,7 @@ class SearchService:
         self.api_key = os.getenv("GOOGLE_SEARCH_API_KEY")
         self.search_engine_id = os.getenv("GOOGLE_SEARCH_ENGINE_ID")
         self.max_results = int(os.getenv("MAX_SEARCH_RESULTS", "5"))
-        self.user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
+        self.user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
         
         # Log configuration status
         if not self.api_key:

@@ -37,6 +37,7 @@ class BaseLLM:
             (Yêu cầu tìm thông tin mới nhất)
             
             Bạn cũng phải tạo thông tin tổng hợp từ các kết quả tìm kiếm trên web để trả lời câu hỏi của người dùng, gửi về dưới dạng context cho mô hình chính.
+            Giữ URL Links và nguồn gốc của thông tin trong câu trả lời của bạn.
             """
             config = { 
                 "max_output_tokens": 512,

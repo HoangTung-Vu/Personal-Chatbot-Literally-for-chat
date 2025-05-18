@@ -10,6 +10,10 @@ A versatile AI assistant application built with FastAPI that provides intelligen
 - 🖥️ **Modern Web Interface**: Clean and responsive UI built with HTML, CSS, and JavaScript
 - 🚀 **Fast API Backend**: Built on FastAPI for high-performance API endpoints
 
+## Project Architecture
+
+![Project Architecture Diagram](Proj_diagram.png)
+
 ## Project Structure
 
 ```

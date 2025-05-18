@@ -110,13 +110,11 @@ Since I couldn't retrieve web results, I'll answer based on my training:
             Based on these detailed web search results, provide a comprehensive and accurate answer to the query: "{query}"
             
             {web_context}
-            
             Please synthesize the information from these sources into a helpful response that directly addresses the query.
             Include only factual information from the sources. If the sources contradict each other, acknowledge this.
             If the web content contains relevant quotations or statistics, include them.
             Cite source numbers [Source X] when referencing specific information.
             Make sure to include the URL when citing information from a specific source, using this format: [Source X: URL]
-            Do not reference "the search results" or "the web search" in your answer.
             {language_instruction}
             """
             
